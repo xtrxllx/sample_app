@@ -1,17 +1,21 @@
 class User < ApplicationRecord
 
- USERS_PARAMS = %i(name email password password_confirmation).freeze
-  
-  before_save{self.email = email.downcase}
+  USERS_PARAMS = %i(name email password password_confirmation).freeze
+  attr_accessor :remember_token
+
   validates :name, presence: true,
-    length: {maximum: Settings.validations.name.max_length}
+    length: { maximum: Settings.validations.name.max_length }
+
   validates :email, presence: true,
-    length: {maximum: Settings.validations.email.max_length},
-    format: {with: Settings.validations.email.regex}
+    length: { maximum: Settings.validations.email.max_length},
+    format: { with: Settings.validations.email.regex },
+    uniqueness: true
+
   validates :password, presence: true,
-    length: {minimum: Settings.validations.password.min_length}
+    length: { minimum: Settings.validations.password.min_length }
+
   has_secure_password
-  
+
   before_save :downcase_email
 
   class << self
@@ -20,12 +24,8 @@ class User < ApplicationRecord
     end
 
     def digest string
-      cost = if ActiveModel::SecurePassword.min_cost
-        BCrypt::Engine::MIN_COST
-      else
-        BCrypt::Engine.cost
-      end
-      BCrypt::Password.create string, cost: cost
+      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
+      BCrypt::Password.create(string, cost: cost)
     end
   end
 
@@ -35,6 +35,7 @@ class User < ApplicationRecord
   end
 
   def authenticated? remember_token
+    return false unless remember_digest
     BCrypt::Password.new(remember_digest).is_password? remember_token
   end
 

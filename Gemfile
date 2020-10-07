@@ -12,6 +12,9 @@ gem "webpacker", "~> 4.0"
 gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.7"
 gem "jquery-rails", "4.3.1"
+gem "faker", "1.7.3"
+gem "will_paginate", "3.1.5"
+gem "bootstrap-will_paginate", "1.0.0"
 gem "bcrypt", "~> 3.1.7"
 gem "bootsnap", ">= 1.4.2", require: false
 
