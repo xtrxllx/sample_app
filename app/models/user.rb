@@ -16,6 +16,7 @@ class User < ApplicationRecord
   before_save :downcase_email
   before_create :create_activation_digest
   has_secure_password
+  has_many :microposts, dependent: :destroy
 
   class << self
     def digest string
@@ -64,6 +65,10 @@ class User < ApplicationRecord
 
   def send_password_reset_email
     UserMailer.password_reset self.deliver_now
+  end
+
+  def feed
+    microposts
   end
 
   private
