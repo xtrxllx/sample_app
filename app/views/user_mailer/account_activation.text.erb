@@ -1,0 +1,4 @@
+Hi <%= @user.name %>,
+<%= t "user.new.welcome" %>
+<%= t "user.new.link_activate" %>
+<%= edit_account_activation_url id: @user.activation_token, email: @user.email %>
